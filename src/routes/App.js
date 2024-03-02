@@ -201,7 +201,7 @@ function MyComponent() {
         <p>
           Destination: {location.state.des.lat}, {location.state.des.lng}
         </p>
-        <p>Current Trip Distance: {distance} km</p>
+        <p>Current Trip Distance: {Math.floor(distance*100)/100} km</p>
         <p>
           Current Trip Time: {hours}h {minutes}m
         </p>
@@ -264,7 +264,7 @@ function MyComponent() {
         <p>
           Destination: {location.state.des.lat}, {location.state.des.lng}
         </p>
-        <p>New Trip Distance: {distance} km</p>
+        <p>New Trip Distance: {Math.floor(distance*100)/100} km</p>
         <p>
           Time to Charging Station: <br></br>
           Time to Destination: <br></br>

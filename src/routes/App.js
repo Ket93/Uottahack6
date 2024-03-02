@@ -133,7 +133,6 @@ function MyComponent() {
   const hours = Math.floor(time/60);
   const minutes = Math.round(time % 60);
 
-  let map2;
   let service;
   let infowindow;
 
@@ -144,50 +143,70 @@ function MyComponent() {
   }
 
   function initMap() {
-    const sydney = new google.maps.LatLng(-33.867, 151.195);
+    const xDist = location.state.des.lng - location.state.dep.lng;
+    const yDist = location.state.des.lat - location.state.dep.lat;
 
-    infowindow = new google.maps.InfoWindow();
-    map2 = new google.maps.Map(document.getElementById("map"), {
-      center: sydney,
-      zoom: 15,
-    });
+    const point1Lng = location.state.dep.lng + xDist / 4;
+    const point1Lat = location.state.dep.lat + yDist / 4;
 
-    var pyrmont = new google.maps.LatLng(-33.8665433, 151.1956316);
+    const point2Lng = location.state.dep.lng + (xDist / 4) * 2;
+    const point2Lat = location.state.dep.lat + (yDist / 4) * 2;
 
-    const request = {
-      location: pyrmont,
-      radius: 50,
-      type: ["electric_vehicle_charging_station"],
-    };
+    const point3Lng = location.state.dep.lng + (xDist / 4) * 3;
+    const point3Lat = location.state.dep.lat + (yDist / 4) * 3;
 
-    service = new google.maps.places.PlacesService(map2);
-    service.nearbySearch(request, (results, status) => {
-      if (status === google.maps.places.PlacesServiceStatus.OK && results) {
-        for (let i = 0; i < results.length; i++) {
-          console.log(results[i]);
-          createMarker(results[i]);
+    var point1 = new google.maps.LatLng(point1Lat, point1Lng);
+    var point2 = new google.maps.LatLng(point2Lat, point2Lng);
+    var point3 = new google.maps.LatLng(point3Lat, point3Lng);
+
+    const requests = [
+      {
+        location: point1,
+        radius: 2000,
+        type: ["electric_vehicle_charging_station"],
+      },
+      {
+        location: point2,
+        radius: 2000,
+        type: ["electric_vehicle_charging_station"],
+      },
+      {
+        location: point3,
+        radius: 2000,
+        type: ["electric_vehicle_charging_station"],
+      },
+    ];
+
+    service = new google.maps.places.PlacesService(map);
+
+    for (let i = 0; i < requests.length; i++) {
+      service.nearbySearch(requests[i], (results, status) => {
+        console.log(results);
+        if (status === google.maps.places.PlacesServiceStatus.OK && results) {
+          for (let i = 0; i < results.length; i++) {
+            console.log(results[i]);
+            createMarker(results[i]);
+          }
+
+          map.setCenter(results[0].geometry.location);
         }
-
-        map.setCenter(results[0].geometry.location);
-      }
-    });
+      });
+    }
   }
 
   function createMarker(place) {
     if (!place.geometry || !place.geometry.location) return;
 
     const marker = new google.maps.Marker({
-      map2,
+      map,
       position: place.geometry.location,
     });
 
     google.maps.event.addListener(marker, "click", () => {
       infowindow.setContent(place.name || "");
-      infowindow.open(map2);
+      infowindow.open(map);
     });
   }
-
-  window.initMap = initMap;
 
   return isLoaded ? (
     <div className="map">
@@ -196,10 +215,10 @@ function MyComponent() {
           <h2>Trip Details</h2>
         </div>
         <p>
-          Starting Point: {location.state.dep.lat}, {location.state.dep.lng}
+          Starting Point: {location.state.dep.lng}, {location.state.dep.lat}
         </p>
         <p>
-          Destination: {location.state.des.lat}, {location.state.des.lng}
+          Destination: {location.state.des.lng}, {location.state.des.lat}
         </p>
         <p>Current Trip Distance: {Math.floor(distance*100)/100} km</p>
         <p>
@@ -223,7 +242,7 @@ function MyComponent() {
 
       <div>
         <GoogleMap
-          id = "map"
+          id="map"
           mapContainerStyle={containerStyle}
           center={center}
           zoom={10}

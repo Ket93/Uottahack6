@@ -38,7 +38,7 @@ function Search() {
   const navigate = useNavigate();
 
   const handleBatteryChange = (e) => {
-    setBattery(e.target.value)
+    setBattery(+e.target.value)
   }
   
   return (

@@ -6,13 +6,14 @@ import reportWebVitals from './reportWebVitals';
 
 import {
   createBrowserRouter,
+  createHashRouter,
   RouterProvider,
 } from "react-router-dom";
 import SearchScreen from './routes/SearchScreen';
 
-const router = createBrowserRouter([
+const router = createHashRouter([
   {
-    path: "/",
+    path: "",
     element: <SearchScreen />,
   },
   {

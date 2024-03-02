@@ -1,0 +1,22 @@
+.SearchScreen {
+  text-align: center;
+  align-items: center;
+}
+
+.searches {
+  align-items: center;
+}
+
+.dep, .des {
+  align-items: left;
+  text-align: left;
+  padding: 5px;
+  width: 40%;
+  display: inline-block;
+  border-radius: 12px;
+  border-width: 0px;
+  border-style: solid;
+  margin: 4px;
+}
+
+

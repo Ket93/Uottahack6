@@ -1,5 +1,6 @@
 import React from "react";
 import { GoogleMap, useJsApiLoader } from "@react-google-maps/api";
+import { useLocation, useParams } from "react-router-dom";
 
 const containerStyle = {
   width: "400px",
@@ -11,7 +12,7 @@ const center = {
   lng: -38.523,
 };
 
-function MyComponent() {
+function MyComponent(props) {
   const { isLoaded } = useJsApiLoader({
     id: "google-map-script",
     googleMapsApiKey: "AIzaSyASDHVgsFIxrAM_HWWNRCN8_XioS2zX4RM",
@@ -31,6 +32,9 @@ function MyComponent() {
     setMap(null);
   }, []);
 
+  const location = useLocation();
+  console.log(location);
+
   return isLoaded ? (
     <div className="map">
       <GoogleMap
@@ -43,10 +47,13 @@ function MyComponent() {
         {/* Child components, such as markers, info windows, etc. */}
         <></>
       </GoogleMap>
+      <a onClick={() => {
+        console.log(location)
+      }}>Click me</a>
     </div>
   ) : (
     <></>
   );
 }
 
-export default React.memo(MyComponent);
+export default MyComponent;

@@ -1,5 +1,5 @@
 import React from "react";
-import '../styles/SearchScreen.css'
+import "../styles/SearchScreen.css";
 import { useNavigate } from "react-router-dom";
 import { useLoadScript } from "@react-google-maps/api";
 
@@ -30,7 +30,6 @@ export default function SearchScreen() {
 }
 
 function Search() {
-
   const [departure, setDeparture] = useState(null);
   const [destination, setDestination] = useState(null);
   const [battery, setBattery] = useState(0);
@@ -38,20 +37,24 @@ function Search() {
   const navigate = useNavigate();
 
   const handleBatteryChange = (e) => {
-    setBattery(+e.target.value)
-  }
-  
+    setBattery(+e.target.value);
+  };
+
   return (
     <div className="SearchScreen">
       <div className="searches">
         <div className="dep">
-          <PlacesAutocomplete setSelected={setDeparture}/>
+          <PlacesAutocomplete setSelected={setDeparture} />
         </div>
         <div className="des">
-          <PlacesAutocomplete setSelected={setDestination}/>
+          <PlacesAutocomplete setSelected={setDestination} />
         </div>
         <div className="battery">
-          <input className="battery_input" type="range"  min="0" max="100" 
+          <input
+            className="battery_input"
+            type="range"
+            min="0"
+            max="100"
             value={battery}
             onChange={handleBatteryChange}
           />
@@ -61,16 +64,19 @@ function Search() {
         </div>
       </div>
       <div>
-        <a onClick={() => {
-            console.log(battery)
-            navigate('/map', {state: {dep: departure, des: destination, bat: battery}});
+        <a
+          onClick={() => {
+            console.log(battery);
+            navigate("/map", {
+              state: { dep: departure, des: destination, bat: battery },
+            });
           }}
         >
           click me
         </a>
       </div>
     </div>
-  )
+  );
 }
 
 const PlacesAutocomplete = ({ setSelected }) => {
@@ -111,4 +117,3 @@ const PlacesAutocomplete = ({ setSelected }) => {
     </Combobox>
   );
 };
-

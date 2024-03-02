@@ -51,10 +51,6 @@ Button.defaultProps = {
 const google = (window.google = window.google ? window.google : {});
 
 function MyComponent() {
-  useScript(
-    `https://maps.googleapis.com/maps/api/js?key=AIzaSyASDHVgsFIxrAM_HWWNRCN8_XioS2zX4RM`
-  );
-
   const { isLoaded } = useJsApiLoader({
     googleMapsApiKey: "AIzaSyASDHVgsFIxrAM_HWWNRCN8_XioS2zX4RM",
   });
@@ -63,8 +59,8 @@ function MyComponent() {
 
   const onLoad = React.useCallback(function callback(map) {
     // This is just an example of getting and using the map instance!!! don't just blindly copy!
-    const bounds = new window.google.maps.LatLngBounds(center);
-    map.fitBounds(bounds);
+    // const bounds = new window.google.maps.LatLngBounds(center);
+    // map.fitBounds(bounds);
 
     setMap(map);
   }, []);
@@ -145,9 +141,12 @@ function MyComponent() {
         <p>
           Current Trip Time: {hours}h {minutes}m
         </p>
-        <p>Current Battery: 35%</p>
+        <p>Current Battery: {location.state.bat}%</p>
 
-        <BatteryMeter batteryLevel={0.35} isCharging={false} />
+        <BatteryMeter
+          batteryLevel={location.state.bat / 100}
+          isCharging={false}
+        />
 
         <div className="center">
           <Button>Reroute with EV Stations!</Button>
@@ -158,7 +157,7 @@ function MyComponent() {
         <GoogleMap
           mapContainerStyle={containerStyle}
           center={center}
-          zoom={8}
+          zoom={10}
           onLoad={onLoad}
           onUnmount={onUnmount}
         >

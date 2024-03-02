@@ -129,8 +129,8 @@ function MyComponent() {
           Math.cos(degrees_to_radians(desLong) - degrees_to_radians(depLong))
     ) * 6371;
 
-  const time = distance / 60;
-  const hours = Math.floor(time);
+  const time = distance;
+  const hours = Math.floor(time/60);
   const minutes = Math.round(time % 60);
 
   let service;

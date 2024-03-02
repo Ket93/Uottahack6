@@ -3,6 +3,7 @@ import { useLocation, useParams } from "react-router-dom";
 import styled from "styled-components";
 import useScript from "../script";
 import BatteryMeter from "../BatteryMeter";
+import SpotifyWidget from "../components/SpotifyWigdet";
 import {
   GoogleMap,
   useJsApiLoader,
@@ -151,6 +152,7 @@ function MyComponent() {
         <div className="center">
           <Button>Reroute with EV Stations!</Button>
         </div>
+        <SpotifyWidget />
       </div>
 
       <div>

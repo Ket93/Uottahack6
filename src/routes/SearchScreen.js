@@ -33,8 +33,13 @@ function Search() {
 
   const [departure, setDeparture] = useState(null);
   const [destination, setDestination] = useState(null);
+  const [battery, setBattery] = useState(0);
 
   const navigate = useNavigate();
+
+  const handleBatteryChange = (e) => {
+    setBattery(e.target.value)
+  }
   
   return (
     <div className="SearchScreen">
@@ -45,10 +50,18 @@ function Search() {
         <div className="des">
           <PlacesAutocomplete setSelected={setDestination}/>
         </div>
+        <div className="battery">
+          <input className="battery_input" type="range"  min="0" max="100" 
+            value={battery}
+            onChange={handleBatteryChange}
+          />
+          <label for="battery">Battery</label>
+        </div>
       </div>
       <div>
         <a onClick={() => {
-            navigate('/map', {state: {dep: departure, des: destination}});
+            console.log(battery)
+            navigate('/map', {state: {dep: departure, des: destination, bat: battery}});
           }}
         >
           click me

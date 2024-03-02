@@ -62,14 +62,40 @@ function MyComponent() {
     // This is just an example of getting and using the map instance!!! don't just blindly copy!
     // const bounds = new window.google.maps.LatLngBounds(center);
     // map.fitBounds(bounds);
+    const directionsService = new google.maps.DirectionsService();
 
+    const origin = { lat: location.state.dep.lat, lng: location.state.dep.lng };
+    const destination = { lat: location.state.des.lat, lng: location.state.des.lng };
+
+    if (origin !== null && destination !== null) {
+      directionsService.route(
+        {
+          origin: new google.maps.LatLng(location.state.dep.lat, location.state.dep.lng),
+          destination: new google.maps.LatLng(location.state.des.lat, location.state.des.lng),
+          travelMode: google.maps.TravelMode.DRIVING,
+        },
+        (result, status) => {
+          if (status === google.maps.DirectionsStatus.OK) {
+            //console.log(result)
+            setDirections(result)
+            console.log(directions)
+          } else {
+            console.error(`error fetching directions ${result}`);
+          }
+        }
+      );
+    } else {
+      console.log("Please mark your destination in the map first!");
+    }
     setMap(map);
   }, []);
 
   const onUnmount = React.useCallback(function callback(map) {
     setMap(null);
   }, []);
-
+  
+  const [directions, setDirections] = React.useState(null);
+  
   const location = useLocation();
   console.log(location);
 
@@ -98,33 +124,8 @@ function MyComponent() {
   const hours = Math.floor(time);
   const minutes = Math.round(time % 60);
 
-  // getting directions
+  //getting directions
 
-  // const directionsService = new window.google.maps.DirectionsService();
-
-  // const origin = { lat: -34.397, lng: 150.644 };
-  // const destination = { lat: -34.397, lng: 150.644 };
-
-  // if (origin !== null && destination !== null) {
-  //   directionsService.route(
-  //     {
-  //       origin: origin,
-  //       destination: destination,
-  //       travelMode: new window.google.maps.TravelMode.DRIVING(),
-  //     },
-  //     (result, status) => {
-  //       if (status === new window.google.maps.DirectionsStatus.OK()) {
-  //         this.setState({
-  //           directions: result,
-  //         });
-  //       } else {
-  //         console.error(`error fetching directions ${result}`);
-  //       }
-  //     }
-  //   );
-  // } else {
-  //   console.log("Please mark your destination in the map first!");
-  // }
 
   return isLoaded ? (
     <div className="map">
@@ -163,6 +164,12 @@ function MyComponent() {
           onLoad={onLoad}
           onUnmount={onUnmount}
         >
+          <DirectionsRenderer 
+            directions= {directions}
+            defaultOptions={{
+              suppressMarkers: true
+            }}
+          />
           <Marker
             position={{
               lat: location.state.dep.lat,

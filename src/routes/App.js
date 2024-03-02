@@ -137,9 +137,10 @@ function MyComponent() {
   let service;
   let infowindow;
 
-  function generateEV() {
+  function generateEV(e) {
+    e.preventDefault();
     console.log("You clicked submit.");
-    // initMap();
+    initMap();
   }
 
   function initMap() {
@@ -151,12 +152,12 @@ function MyComponent() {
       zoom: 15,
     });
 
-    var pyrmont = new google.maps.LatLng(-33.8665433,151.1956316);
+    var pyrmont = new google.maps.LatLng(-33.8665433, 151.1956316);
 
     const request = {
       location: pyrmont,
       radius: 50,
-      type: ['electric_vehicle_charging_station']
+      type: ["electric_vehicle_charging_station"],
     };
 
     service = new google.maps.places.PlacesService(map2);
@@ -218,9 +219,7 @@ function MyComponent() {
           </Button>
           <Button className="chargeButton">Reroute!</Button>
         </div>
-        <div className="spotify">
-          <SpotifyWidget />
-        </div>
+        <SpotifyWidget />
       </div>
 
       <div>
@@ -255,10 +254,16 @@ function MyComponent() {
         </GoogleMap>
       </div>
 
-      <div className="EvTrip">
+      <div>
         <div className="center">
           <h2>New Trip </h2>
         </div>
+        <p>
+          Starting Point: {location.state.dep.lat}, {location.state.dep.lng}
+        </p>
+        <p>
+          Destination: {location.state.des.lat}, {location.state.des.lng}
+        </p>
         <p>New Trip Distance: {distance} km</p>
         <p>
           Time to Charging Station: <br></br>

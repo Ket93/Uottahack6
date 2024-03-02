@@ -129,7 +129,7 @@ function MyComponent() {
           Math.cos(degrees_to_radians(desLong) - degrees_to_radians(depLong))
     ) * 6371;
 
-  const time = distance / 80;
+  const time = distance / 60;
   const hours = Math.floor(time);
   const minutes = Math.round(time % 60);
 
@@ -137,10 +137,9 @@ function MyComponent() {
   let service;
   let infowindow;
 
-  function generateEV(e) {
-    e.preventDefault();
+  function generateEV() {
     console.log("You clicked submit.");
-    initMap();
+    // initMap();
   }
 
   function initMap() {
@@ -237,6 +236,7 @@ function MyComponent() {
             }}
           />
           {/* <Marker
+            onClick={generateEV}
             position={{
               lat: location.state.dep.lat,
               lng: location.state.dep.lng,
@@ -251,6 +251,37 @@ function MyComponent() {
 
           <></>
         </GoogleMap>
+      </div>
+
+      <div>
+        <div className="center">
+          <h2>New Trip </h2>
+        </div>
+        <p>
+          Starting Point: {location.state.dep.lat}, {location.state.dep.lng}
+        </p>
+        <p>
+          Destination: {location.state.des.lat}, {location.state.des.lng}
+        </p>
+        <p>New Trip Distance: {distance} km</p>
+        <p>
+          Time to Charging Station: <br></br>
+          Time to Destination: <br></br>
+          New Total Trip Time:
+          {hours}h {minutes}m
+        </p>
+        <p>Charge to: {location.state.bat}% or more</p>
+
+        <BatteryMeter
+          batteryLevel={location.state.bat / 100}
+          isCharging={true}
+        />
+
+        <div className="centerCol">
+          <Button onClick={generateEV} className="chargeButton">
+            View EV Charging Stations
+          </Button>
+        </div>
       </div>
     </div>
   ) : (

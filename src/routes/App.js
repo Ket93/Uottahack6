@@ -129,8 +129,8 @@ function MyComponent() {
           Math.cos(degrees_to_radians(desLong) - degrees_to_radians(depLong))
     ) * 6371;
 
-  const time = distance / 60;
-  const hours = Math.floor(time);
+  const time = distance;
+  const hours = Math.floor(time/60);
   const minutes = Math.round(time % 60);
 
   let map2;
@@ -190,8 +190,7 @@ function MyComponent() {
   window.initMap = initMap;
 
   return isLoaded ? (
-    // <div className="map">
-    <div id="map">
+    <div className="map">
       <div className="details">
         <div className="center">
           <h2>Trip Details</h2>
@@ -224,6 +223,7 @@ function MyComponent() {
 
       <div>
         <GoogleMap
+          id = "map"
           mapContainerStyle={containerStyle}
           center={center}
           zoom={10}

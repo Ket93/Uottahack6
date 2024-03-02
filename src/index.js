@@ -8,12 +8,18 @@ import {
   createBrowserRouter,
   RouterProvider,
 } from "react-router-dom";
+import SearchScreen from './routes/SearchScreen';
 
 const router = createBrowserRouter([
   {
     path: "/",
+    element: <SearchScreen />,
+  },
+  {
+    path: "/map",
     element: <App />,
   },
+
 ]);
 
 const root = ReactDOM.createRoot(document.getElementById('root'));

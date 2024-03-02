@@ -15,9 +15,17 @@
   border: 1px solid red;
 }
 
-.combobox-input, .battery_input {
+.combobox-input {
   width: 100%;
   padding: 0.5rem;
 }
+
+.battery && label {
+  width: 100px;
+  text-align: center;
+}
+
+
+
 
 

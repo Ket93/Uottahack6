@@ -55,8 +55,9 @@ function Search() {
             value={battery}
             onChange={handleBatteryChange}
           />
-          <label for="battery">Battery {battery}%</label>
-          
+          <div>
+            <label for="battery">Battery {battery}%</label>
+          </div>
         </div>
       </div>
       <div>

@@ -218,7 +218,9 @@ function MyComponent() {
           </Button>
           <Button className="chargeButton">Reroute!</Button>
         </div>
-        <SpotifyWidget />
+        <div className="spotify">
+          <SpotifyWidget />
+        </div>
       </div>
 
       <div>
@@ -253,16 +255,10 @@ function MyComponent() {
         </GoogleMap>
       </div>
 
-      <div>
+      <div className="EvTrip">
         <div className="center">
           <h2>New Trip </h2>
         </div>
-        <p>
-          Starting Point: {location.state.dep.lat}, {location.state.dep.lng}
-        </p>
-        <p>
-          Destination: {location.state.des.lat}, {location.state.des.lng}
-        </p>
         <p>New Trip Distance: {distance} km</p>
         <p>
           Time to Charging Station: <br></br>

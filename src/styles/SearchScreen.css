@@ -1,16 +1,33 @@
 .SearchScreen {
-  text-align: center;
-  align-items: center;
-}
-
-.searches {
-  align-items: center;
-  top: 20px;
+  height: 20vh;
+  width: 100%;
   display: flex;
   justify-content: space-evenly;
+  align-items: center;
 }
 
-.dep, .des, .battery {
+#input {
+  margin-top: 20px;
+}
+
+.image {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  margin-top: 80px;
+}
+
+.ford {
+  width: 800px;
+}
+
+.submitButton {
+  cursor: pointer;
+}
+
+.dep,
+.des,
+.battery {
   text-align: left;
 }
 
@@ -23,8 +40,3 @@
   width: 100px;
   text-align: center;
 }
-
-
-
-
-

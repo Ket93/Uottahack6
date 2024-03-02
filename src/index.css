@@ -16,6 +16,17 @@
   justify-content: center;
 }
 
+.centerCol {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+}
+
+.chargeButton {
+  margin: 0px;
+}
+
 html,
 body {
   height: 100%;

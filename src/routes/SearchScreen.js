@@ -1,8 +1,9 @@
 import React from "react";
 import "../styles/SearchScreen.css";
 import { useNavigate } from "react-router-dom";
+import styled from "styled-components";
 import { useLoadScript } from "@react-google-maps/api";
-
+import ford from "../Ford.png";
 import { useState } from "react";
 
 import usePlacesAutocomplete, {
@@ -29,6 +30,39 @@ export default function SearchScreen() {
   return <Search />;
 }
 
+const theme = {
+  blue: {
+    default: "#3f51b5",
+    hover: "#283593",
+  },
+};
+
+const Button = styled.button`
+  background-color: ${(props) => theme[props.theme].default};
+  color: white;
+  padding: 5px 15px;
+  border-radius: 5px;
+  height: 30px;
+  outline: 0;
+  border: 0;
+  text-transform: uppercase;
+  margin: 10px 0px;
+  cursor: pointer;
+  box-shadow: 0px 2px 2px lightgray;
+  transition: ease background-color 250ms;
+  &:hover {
+    background-color: ${(props) => theme[props.theme].hover};
+  }
+  &:disabled {
+    cursor: default;
+    opacity: 0.7;
+  }
+`;
+
+Button.defaultProps = {
+  theme: "blue",
+};
+
 function Search() {
   const [departure, setDeparture] = useState(null);
   const [destination, setDestination] = useState(null);
@@ -41,13 +75,18 @@ function Search() {
   };
 
   return (
-    <div className="SearchScreen">
-      <div className="searches">
+    <div className="container">
+      <div className="image">
+        <img className="ford" src={ford} alt=""></img>
+      </div>
+      <div className="SearchScreen">
         <div className="dep">
-          <PlacesAutocomplete setSelected={setDeparture} />
+          Where are you starting?
+          <PlacesAutocomplete id="input" setSelected={setDeparture} />
         </div>
         <div className="des">
-          <PlacesAutocomplete setSelected={setDestination} />
+          Where are you going?
+          <PlacesAutocomplete id="input" setSelected={setDestination} />
         </div>
         <div className="battery">
           <input
@@ -59,21 +98,22 @@ function Search() {
             onChange={handleBatteryChange}
           />
           <div>
-            <label for="battery">Battery {battery}%</label>
+            <label for="battery">Battery Level {battery}%</label>
           </div>
         </div>
-      </div>
-      <div>
-        <a
-          onClick={() => {
-            console.log(battery);
-            navigate("/map", {
-              state: { dep: departure, des: destination, bat: battery },
-            });
-          }}
-        >
-          click me
-        </a>
+        <div>
+          <Button
+            className="submitButton"
+            onClick={() => {
+              console.log(battery);
+              navigate("/map", {
+                state: { dep: departure, des: destination, bat: battery },
+              });
+            }}
+          >
+            Find Route!
+          </Button>
+        </div>
       </div>
     </div>
   );

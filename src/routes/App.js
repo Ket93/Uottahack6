@@ -1,5 +1,5 @@
 import React from "react";
-import { useLocation, useParams } from "react-router-dom";
+import { useLocation } from "react-router-dom";
 import styled from "styled-components";
 import useScript from "../script";
 import BatteryMeter from "../BatteryMeter";
@@ -65,20 +65,29 @@ function MyComponent() {
     const directionsService = new google.maps.DirectionsService();
 
     const origin = { lat: location.state.dep.lat, lng: location.state.dep.lng };
-    const destination = { lat: location.state.des.lat, lng: location.state.des.lng };
+    const destination = {
+      lat: location.state.des.lat,
+      lng: location.state.des.lng,
+    };
 
     if (origin !== null && destination !== null) {
       directionsService.route(
         {
-          origin: new google.maps.LatLng(location.state.dep.lat, location.state.dep.lng),
-          destination: new google.maps.LatLng(location.state.des.lat, location.state.des.lng),
+          origin: new google.maps.LatLng(
+            location.state.dep.lat,
+            location.state.dep.lng
+          ),
+          destination: new google.maps.LatLng(
+            location.state.des.lat,
+            location.state.des.lng
+          ),
           travelMode: google.maps.TravelMode.DRIVING,
         },
         (result, status) => {
           if (status === google.maps.DirectionsStatus.OK) {
             //console.log(result)
-            setDirections(result)
-            console.log(directions)
+            setDirections(result);
+            console.log(directions);
           } else {
             console.error(`error fetching directions ${result}`);
           }
@@ -93,9 +102,9 @@ function MyComponent() {
   const onUnmount = React.useCallback(function callback(map) {
     setMap(null);
   }, []);
-  
+
   const [directions, setDirections] = React.useState(null);
-  
+
   const location = useLocation();
   console.log(location);
 
@@ -124,8 +133,57 @@ function MyComponent() {
   const hours = Math.floor(time);
   const minutes = Math.round(time % 60);
 
-  //getting directions
+  let map2;
+  let service;
+  let infowindow;
 
+  function generateEV(e) {
+    e.preventDefault();
+    console.log("You clicked submit.");
+    initMap();
+  }
+
+  function initMap() {
+    const sydney = new google.maps.LatLng(-33.867, 151.195);
+
+    infowindow = new google.maps.InfoWindow();
+    map2 = new google.maps.Map(document.getElementById("map"), {
+      center: sydney,
+      zoom: 15,
+    });
+
+    const request = {
+      query: "Museum of Contemporary Art Australia",
+      fields: ["name", "geometry"],
+    };
+
+    service = new google.maps.places.PlacesService(map2);
+    service.findPlaceFromQuery(request, (results, status) => {
+      if (status === google.maps.places.PlacesServiceStatus.OK && results) {
+        for (let i = 0; i < results.length; i++) {
+          createMarker(results[i]);
+        }
+
+        map.setCenter(results[0].geometry.location);
+      }
+    });
+  }
+
+  function createMarker(place) {
+    if (!place.geometry || !place.geometry.location) return;
+
+    const marker = new google.maps.Marker({
+      map2,
+      position: place.geometry.location,
+    });
+
+    google.maps.event.addListener(marker, "click", () => {
+      infowindow.setContent(place.name || "");
+      infowindow.open(map2);
+    });
+  }
+
+  window.initMap = initMap;
 
   return isLoaded ? (
     <div className="map">
@@ -150,8 +208,11 @@ function MyComponent() {
           isCharging={false}
         />
 
-        <div className="center">
-          <Button>Reroute with EV Stations!</Button>
+        <div className="centerCol">
+          <Button onClick={generateEV} className="chargeButton">
+            View EV Charging Stations
+          </Button>
+          <Button className="chargeButton">Reroute!</Button>
         </div>
         <SpotifyWidget />
       </div>
@@ -164,13 +225,13 @@ function MyComponent() {
           onLoad={onLoad}
           onUnmount={onUnmount}
         >
-          <DirectionsRenderer 
-            directions= {directions}
+          <DirectionsRenderer
+            directions={directions}
             defaultOptions={{
-              suppressMarkers: true
+              suppressMarkers: true,
             }}
           />
-          <Marker
+          {/* <Marker
             position={{
               lat: location.state.dep.lat,
               lng: location.state.dep.lng,
@@ -181,13 +242,8 @@ function MyComponent() {
               lat: location.state.des.lat,
               lng: location.state.des.lng,
             }}
-          ></Marker>
-          {/* <DirectionsRenderer
-          directions={this.state.directions}
-          defaultOptions={{
-            suppressMarkers: true,
-          }} 
-        />*/}
+          ></Marker> */}
+
           <></>
         </GoogleMap>
       </div>

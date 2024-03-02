@@ -152,15 +152,19 @@ function MyComponent() {
       zoom: 15,
     });
 
+    var pyrmont = new google.maps.LatLng(-33.8665433,151.1956316);
+
     const request = {
-      query: "Museum of Contemporary Art Australia",
-      fields: ["name", "geometry"],
+      location: pyrmont,
+      radius: 50,
+      type: ['electric_vehicle_charging_station']
     };
 
     service = new google.maps.places.PlacesService(map2);
-    service.findPlaceFromQuery(request, (results, status) => {
+    service.nearbySearch(request, (results, status) => {
       if (status === google.maps.places.PlacesServiceStatus.OK && results) {
         for (let i = 0; i < results.length; i++) {
+          console.log(results[i]);
           createMarker(results[i]);
         }
 
@@ -186,7 +190,8 @@ function MyComponent() {
   window.initMap = initMap;
 
   return isLoaded ? (
-    <div className="map">
+    // <div className="map">
+    <div id="map">
       <div className="details">
         <div className="center">
           <h2>Trip Details</h2>

@@ -6,6 +6,16 @@
   align-items: center;
 }
 
+.details {
+  margin-right: 10%;
+}
+
+.center {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+}
+
 html,
 body {
   height: 100%;

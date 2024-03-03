@@ -152,21 +152,25 @@ function MyComponent() {
 
   const degrees_to_radians = (deg) => (deg * Math.PI) / 180.0;
 
-  const distance =
-    Math.acos(
-      Math.sin(degrees_to_radians(depLat)) *
-        Math.sin(degrees_to_radians(desLat)) +
-        Math.cos(degrees_to_radians(depLat)) *
-          Math.cos(degrees_to_radians(desLat)) *
-          Math.cos(degrees_to_radians(desLong) - degrees_to_radians(depLong))
-    ) * 6371;
+  const distance = getDistance(depLat, depLong, desLat, desLong);
+
+  function getDistance(depLat, depLong, desLat, desLong) {
+    return (
+      Math.acos(
+        Math.sin(degrees_to_radians(depLat)) *
+          Math.sin(degrees_to_radians(desLat)) +
+          Math.cos(degrees_to_radians(depLat)) *
+            Math.cos(degrees_to_radians(desLat)) *
+            Math.cos(degrees_to_radians(desLong) - degrees_to_radians(depLong))
+      ) * 6371
+    );
+  }
 
   const time = distance;
   const hours = Math.floor(time / 80);
   const minutes = Math.round(time % 60);
 
   let service;
-  let infowindow;
 
   function generateEV(e) {
     e.preventDefault();
@@ -175,22 +179,20 @@ function MyComponent() {
   }
 
   function initMap() {
-
-    console.log(directions.routes[0].overview_polyline)
-    var polyline = require('google-polyline')
-    var all_points = polyline.decode(directions.routes[0].overview_polyline)
-    console.log(all_points)
+    console.log(directions.routes[0].overview_polyline);
+    var polyline = require("google-polyline");
+    var all_points = polyline.decode(directions.routes[0].overview_polyline);
+    console.log(all_points);
 
     service = new google.maps.places.PlacesService(map);
-    var inc = Math.floor(all_points.length/6);
-    for (let i = inc; i < all_points.length; i+=inc) {
+    var inc = Math.floor(all_points.length / 6);
+    for (let i = inc; i < all_points.length; i += inc) {
       console.log(i);
-      var request = 
-      {
-        location: {lat: all_points[i][0], lng: all_points[i][1]},
+      var request = {
+        location: { lat: all_points[i][0], lng: all_points[i][1] },
         radius: 2000,
         type: ["electric_vehicle_charging_station"],
-      }
+      };
 
       service.nearbySearch(request, (results, status) => {
         console.log(results);
@@ -205,7 +207,10 @@ function MyComponent() {
       });
     }
   }
-    
+
+  let EVlng;
+  let EVlat;
+  let EVdistance;
 
   function createMarker(place) {
     if (!place.geometry || !place.geometry.location) return;
@@ -216,8 +221,47 @@ function MyComponent() {
     });
 
     google.maps.event.addListener(marker, "click", () => {
-      infowindow.setContent(place.name || "");
-      infowindow.open(map);
+      EVlng = place.geometry.location.lng();
+      EVlat = place.geometry.location.lat();
+      EVdistance =
+        Math.round(
+          (getDistance(depLat, depLong, EVlat, EVlng) +
+            getDistance(EVlat, EVlng, desLat, desLong)) *
+            100
+        ) / 100;
+      let distChange = Math.round((EVdistance - distance) * 100) / 100;
+      document.getElementById("EVtrip").innerText =
+        `
+        Change in Trip Distance: ` +
+        distChange +
+        `km
+        New Trip Distance: ` +
+        EVdistance +
+        `km`;
+
+      const EVhours = Math.floor(EVdistance / 80);
+      const EVminutes = Math.round(EVdistance % 60);
+      const EVhoursChange = Math.floor(distChange / 80);
+      const EVminutesChange = Math.round(distChange % 60);
+      document.getElementById("EVtime").innerText =
+        `Change in Trip Time: ` +
+        EVhoursChange +
+        `h ` +
+        EVminutesChange +
+        `m
+        New Trip Time: ` +
+        EVhours +
+        `h ` +
+        EVminutes +
+        `m`;
+
+      document.getElementById(
+        "EVcharge"
+      ).innerText = `Estimated Battery at Arrival: 16%
+         Charge to: 56% or more`;
+
+      document.getElementById("tripStatus").innerText = `CAN MAKE TRIP`;
+      document.getElementById("tripStatus").style.color = "green";
     });
   }
 
@@ -239,7 +283,7 @@ function MyComponent() {
         <p>
           Destination: {location.state.des.lng}, {location.state.des.lat}
         </p>
-        <p>Current Trip Distance: {Math.floor(distance*100)/100} km</p>
+        <p>Current Trip Distance: {Math.floor(distance * 100) / 100} km</p>
         <p>
           Current Trip Time: {hours}h {minutes}m
         </p>
@@ -253,6 +297,7 @@ function MyComponent() {
         />
 
         <div className="centerCol">
+          <p id="tripStatus">CANNOT MAKE TRIP</p>
           <Button onClick={generateEV} className="chargeButton">
             View EV Charging Stations
           </Button>
@@ -261,7 +306,7 @@ function MyComponent() {
       </div>
 
       <div>
-      <SpotifyWidget />
+        <SpotifyWidget />
         <GoogleMap
           id="map"
           mapContainerStyle={containerStyle}
@@ -276,42 +321,29 @@ function MyComponent() {
               suppressMarkers: true,
             }}
           />
-          {/* <Marker
-            onClick={generateEV}
-            position={{
-              lat: location.state.dep.lat,
-              lng: location.state.dep.lng,
-            }}
-          ></Marker>
-          <Marker
-            position={{
-              lat: location.state.des.lat,
-              lng: location.state.des.lng,
-            }}
-          ></Marker> */}
 
           <></>
         </GoogleMap>
       </div>
-      
+
       <div className="EvTrip">
         <div className="center">
           <h2>New Trip </h2>
         </div>
-        <p>
-          Starting Point: {location.state.dep.lat}, {location.state.dep.lng}
+        <p id="EVtrip">
+          Change in Trip Distance: <br></br>
+          New Trip Distance:
         </p>
-        <p>
-          Destination: {location.state.des.lat}, {location.state.des.lng}
+
+        <p id="EVcharge">
+          Estimated Battery at Arrival: <br></br>
+          Charge to:
         </p>
-        <p>New Trip Distance: {Math.floor(distance*100)/100} km</p>
-        <p>
-          Time to Charging Station: <br></br>
-          Time to Destination: <br></br>
-          New Total Trip Time:
-          {hours}h {minutes}m
+
+        <p id="EVtime">
+          Change in Trip Time: <br></br>
+          New Trip Time:
         </p>
-        <p>Charge to: {location.state.bat}% or more</p>
 
         <BatteryMeter
           batteryLevel={location.state.bat / 100}

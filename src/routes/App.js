@@ -82,7 +82,7 @@ Button2.defaultProps = {
 };
 
 const google = (window.google = window.google ? window.google : {});
-let markers = []
+let markers = [];
 function MyComponent() {
   const { isLoaded } = useJsApiLoader({
     googleMapsApiKey: "AIzaSyASDHVgsFIxrAM_HWWNRCN8_XioS2zX4RM",
@@ -91,13 +91,12 @@ function MyComponent() {
   const [map, setMap] = React.useState(null);
   const [directions, setDirections] = React.useState(null);
 
-
   //const [stop, setStop] = React.useState();
 
   var stop = null;
   const setStop = (l) => {
     stop = l;
-  }
+  };
 
   function setMapOnAll(map) {
     for (let i = 0; i < markers.length; i++) {
@@ -124,8 +123,8 @@ function MyComponent() {
     };
 
     if (origin !== null && destination !== null) {
-      var wp = []
-      console.log(stop)
+      var wp = [];
+      console.log(stop);
       if (stop) {
         wp.push({
           location: stop,
@@ -133,7 +132,7 @@ function MyComponent() {
         });
       }
 
-      console.log(wp)
+      console.log(wp);
 
       directionsService.route(
         {
@@ -147,7 +146,7 @@ function MyComponent() {
           ),
           travelMode: google.maps.TravelMode.DRIVING,
           waypoints: wp,
-          optimizeWaypoints: true
+          optimizeWaypoints: true,
         },
         (result, status) => {
           if (status === google.maps.DirectionsStatus.OK) {
@@ -163,20 +162,19 @@ function MyComponent() {
       console.log("Please mark your destination in the map first!");
     }
     deleteMarkers();
-  }
+  };
 
   const onLoad = React.useCallback(function callback(map) {
     // This is just an example of getting and using the map instance!!! don't just blindly copy!
     // const bounds = new window.google.maps.LatLngBounds(center);
     // map.fitBounds(bounds);
-    route()
+    route();
     setMap(map);
   }, []);
 
   const onUnmount = React.useCallback(function callback(map) {
     setMap(null);
   }, []);
-
 
   const location = useLocation();
 
@@ -219,19 +217,17 @@ function MyComponent() {
   }
 
   function initMap() {
-
     //console.log(directions.routes[0].overview_polyline)
-    var polyline = require('google-polyline')
-    var all_points = polyline.decode(directions.routes[0].overview_polyline)
+    var polyline = require("google-polyline");
+    var all_points = polyline.decode(directions.routes[0].overview_polyline);
     //console.log(all_points)
 
     service = new google.maps.places.PlacesService(map);
-    var inc = Math.floor(all_points.length/6);
-    for (let i = inc; i < all_points.length; i+=inc) {
+    var inc = Math.floor(all_points.length / 6);
+    for (let i = inc; i < all_points.length; i += inc) {
       //console.log(i);
-      var request = 
-      {
-        location: {lat: all_points[i][0], lng: all_points[i][1]},
+      var request = {
+        location: { lat: all_points[i][0], lng: all_points[i][1] },
         radius: 500,
         type: ["electric_vehicle_charging_station"],
       };
@@ -261,7 +257,7 @@ function MyComponent() {
       map,
       position: place.geometry.location,
     });
-    markers.push(marker)
+    markers.push(marker);
     google.maps.event.addListener(marker, "click", () => {
       console.log(place);
       setStop(place.geometry.location);
@@ -301,10 +297,27 @@ function MyComponent() {
         EVminutes +
         `m`;
 
-      document.getElementById(
-        "EVcharge"
-      ).innerText = `Estimated Battery at Arrival: 16%
-         Charge to: 56% or more`;
+      let toStation =
+        Math.round(
+          (location.state.bat -
+            7 +
+            3 -
+            getDistance(depLat, depLong, EVlat, EVlng) / 3.8) *
+            100
+        ) / 100;
+      let toDest =
+        (Math.round(
+          (getDistance(EVlat, EVlng, desLat, desLong) - toStation * 3.8) / 3
+        ) *
+          100) /
+        100;
+      document.getElementById("EVcharge").innerText =
+        `Estimated Battery at Arrival: ` +
+        toStation +
+        `%
+         Charge to: ` +
+        toDest +
+        `% or more`;
 
       document.getElementById("tripStatus").innerText = `CAN MAKE TRIP`;
       document.getElementById("tripStatus").style.color = "green";
@@ -347,7 +360,6 @@ function MyComponent() {
           <Button onClick={generateEV} className="chargeButton">
             View EV Charging Stations
           </Button>
-          <Button className="chargeButton">Reroute!</Button>
         </div>
       </div>
 

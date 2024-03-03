@@ -82,7 +82,7 @@ Button2.defaultProps = {
 };
 
 const google = (window.google = window.google ? window.google : {});
-
+let markers = []
 function MyComponent() {
   const { isLoaded } = useJsApiLoader({
     googleMapsApiKey: "AIzaSyASDHVgsFIxrAM_HWWNRCN8_XioS2zX4RM",
@@ -90,10 +90,29 @@ function MyComponent() {
 
   const [map, setMap] = React.useState(null);
 
-  const onLoad = React.useCallback(function callback(map) {
-    // This is just an example of getting and using the map instance!!! don't just blindly copy!
-    // const bounds = new window.google.maps.LatLngBounds(center);
-    // map.fitBounds(bounds);
+  //const [stop, setStop] = React.useState();
+
+  var stop = null;
+  const setStop = (l) => {
+    stop = l;
+  }
+
+  function setMapOnAll(map) {
+    for (let i = 0; i < markers.length; i++) {
+      markers[i].setMap(map);
+    }
+  }
+
+  function hideMarkers() {
+    setMapOnAll(null);
+  }
+
+  function deleteMarkers() {
+    hideMarkers();
+    markers = [];
+  }
+
+  const route = () => {
     const directionsService = new google.maps.DirectionsService();
 
     const origin = { lat: location.state.dep.lat, lng: location.state.dep.lng };
@@ -103,6 +122,17 @@ function MyComponent() {
     };
 
     if (origin !== null && destination !== null) {
+      var wp = []
+      console.log(stop)
+      if (stop) {
+        wp.push({
+          location: stop,
+          stopover: true,
+        });
+      }
+
+      console.log(wp)
+
       directionsService.route(
         {
           origin: new google.maps.LatLng(
@@ -114,6 +144,8 @@ function MyComponent() {
             location.state.des.lng
           ),
           travelMode: google.maps.TravelMode.DRIVING,
+          waypoints: wp,
+          //optimizeWaypoints: true
         },
         (result, status) => {
           if (status === google.maps.DirectionsStatus.OK) {
@@ -128,6 +160,14 @@ function MyComponent() {
     } else {
       console.log("Please mark your destination in the map first!");
     }
+    deleteMarkers();
+  }
+
+  const onLoad = React.useCallback(function callback(map) {
+    // This is just an example of getting and using the map instance!!! don't just blindly copy!
+    // const bounds = new window.google.maps.LatLngBounds(center);
+    // map.fitBounds(bounds);
+    route()
     setMap(map);
   }, []);
 
@@ -138,7 +178,7 @@ function MyComponent() {
   const [directions, setDirections] = React.useState(null);
 
   const location = useLocation();
-  console.log(location);
+  //console.log(location);
 
   const center = {
     lat: location.state.dep.lat,
@@ -176,27 +216,27 @@ function MyComponent() {
 
   function initMap() {
 
-    console.log(directions.routes[0].overview_polyline)
+    //console.log(directions.routes[0].overview_polyline)
     var polyline = require('google-polyline')
     var all_points = polyline.decode(directions.routes[0].overview_polyline)
-    console.log(all_points)
+    //console.log(all_points)
 
     service = new google.maps.places.PlacesService(map);
     var inc = Math.floor(all_points.length/6);
     for (let i = inc; i < all_points.length; i+=inc) {
-      console.log(i);
+      //console.log(i);
       var request = 
       {
         location: {lat: all_points[i][0], lng: all_points[i][1]},
-        radius: 2000,
+        radius: 1000,
         type: ["electric_vehicle_charging_station"],
       }
 
       service.nearbySearch(request, (results, status) => {
-        console.log(results);
+        //console.log(results);
         if (status === google.maps.places.PlacesServiceStatus.OK && results) {
           for (let i = 0; i < results.length; i++) {
-            console.log(results[i]);
+            //console.log(results[i]);
             createMarker(results[i]);
           }
 
@@ -214,10 +254,12 @@ function MyComponent() {
       map,
       position: place.geometry.location,
     });
-
+    markers.push(marker)
     google.maps.event.addListener(marker, "click", () => {
-      infowindow.setContent(place.name || "");
-      infowindow.open(map);
+      console.log(place);
+      setStop(place.geometry.location);
+      console.log(stop);
+      route();
     });
   }
 
@@ -298,17 +340,7 @@ function MyComponent() {
         <div className="center">
           <h2>New Trip </h2>
         </div>
-<<<<<<< Updated upstream
-        <p>
-          Starting Point: {location.state.dep.lat}, {location.state.dep.lng}
-        </p>
-        <p>
-          Destination: {location.state.des.lat}, {location.state.des.lng}
-        </p>
-        <p>New Trip Distance: {Math.floor(distance*100)/100} km</p>
-=======
         <p>New Trip Distance: {distance} km</p>
->>>>>>> Stashed changes
         <p>
           Time to Charging Station: <br></br>
           Time to Destination: <br></br>

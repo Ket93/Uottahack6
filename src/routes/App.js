@@ -14,8 +14,8 @@ import {
 import { all } from "q";
 
 const containerStyle = {
-  width: "600px",
-  height: "600px",
+  width: "500px",
+  height: "500px",
 };
 
 const theme = {
@@ -258,10 +258,10 @@ function MyComponent() {
           </Button>
           <Button className="chargeButton">Reroute!</Button>
         </div>
-        <SpotifyWidget />
       </div>
 
       <div>
+      <SpotifyWidget />
         <GoogleMap
           id="map"
           mapContainerStyle={containerStyle}
@@ -293,12 +293,11 @@ function MyComponent() {
           <></>
         </GoogleMap>
       </div>
-
+      
       <div className="EvTrip">
         <div className="center">
           <h2>New Trip </h2>
         </div>
-<<<<<<< Updated upstream
         <p>
           Starting Point: {location.state.dep.lat}, {location.state.dep.lng}
         </p>
@@ -306,9 +305,6 @@ function MyComponent() {
           Destination: {location.state.des.lat}, {location.state.des.lng}
         </p>
         <p>New Trip Distance: {Math.floor(distance*100)/100} km</p>
-=======
-        <p>New Trip Distance: {distance} km</p>
->>>>>>> Stashed changes
         <p>
           Time to Charging Station: <br></br>
           Time to Destination: <br></br>

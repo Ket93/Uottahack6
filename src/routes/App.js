@@ -89,6 +89,8 @@ function MyComponent() {
   });
 
   const [map, setMap] = React.useState(null);
+  const [directions, setDirections] = React.useState(null);
+
 
   //const [stop, setStop] = React.useState();
 
@@ -145,7 +147,7 @@ function MyComponent() {
           ),
           travelMode: google.maps.TravelMode.DRIVING,
           waypoints: wp,
-          //optimizeWaypoints: true
+          optimizeWaypoints: true
         },
         (result, status) => {
           if (status === google.maps.DirectionsStatus.OK) {
@@ -175,10 +177,8 @@ function MyComponent() {
     setMap(null);
   }, []);
 
-  const [directions, setDirections] = React.useState(null);
 
   const location = useLocation();
-  //console.log(location);
 
   const center = {
     lat: location.state.dep.lat,
@@ -232,7 +232,7 @@ function MyComponent() {
       var request = 
       {
         location: {lat: all_points[i][0], lng: all_points[i][1]},
-        radius: 1000,
+        radius: 500,
         type: ["electric_vehicle_charging_station"],
       };
 

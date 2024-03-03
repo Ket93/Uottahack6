@@ -6,6 +6,38 @@
   align-items: center;
 }
 
+.weather {
+  margin-left: 60px;
+  width: 100px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 20px;
+}
+
+.wind {
+  padding-left: 30px;
+  padding-top: 20px;
+  width: 55px;
+}
+
+.tailwind {
+  padding-left: 20px;
+  padding-top: 25px;
+  font-weight: bold;
+}
+
+.tripDetails {
+  margin-top: 0px;
+}
+
+.degrees {
+  padding-top: 20px;
+  font-weight: bold;
+  text-align: center;
+  width: 100px;
+}
+
 .details {
   margin-right: 3%;
 }
@@ -26,11 +58,18 @@
 .centerCol {
   width: 100%;
   display: flex;
+  align-items: center;
   justify-content: center;
   flex-direction: column;
 }
 
 .chargeButton {
+  width: 300px;
+  margin: 0px;
+}
+
+.evChargeButton {
+  width: 120px;
   margin: 0px;
 }
 

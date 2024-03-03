@@ -1,7 +1,8 @@
 import React from "react";
 import { useLocation } from "react-router-dom";
 import styled from "styled-components";
-import useScript from "../script";
+import weather from "../clouds.png";
+import wind from "../wind.png";
 import BatteryMeter from "../BatteryMeter";
 import SpotifyWidget from "../components/SpotifyWigdet";
 import {
@@ -21,6 +22,10 @@ const theme = {
   blue: {
     default: "#3f51b5",
     hover: "#283593",
+  },
+  green: {
+    default: "#26bf34",
+    hover: "#20b32d",
   },
 };
 
@@ -46,8 +51,34 @@ const Button = styled.button`
   }
 `;
 
+const Button2 = styled.button`
+  background-color: ${(props) => theme[props.theme].default};
+  color: white;
+  padding: 5px 15px;
+  border-radius: 5px;
+  height: 30px;
+  outline: 0;
+  border: 0;
+  text-transform: uppercase;
+  margin: 10px 0px;
+  cursor: pointer;
+  box-shadow: 0px 2px 2px lightgray;
+  transition: ease background-color 250ms;
+  &:hover {
+    background-color: ${(props) => theme[props.theme].hover};
+  }
+  &:disabled {
+    cursor: default;
+    opacity: 0.7;
+  }
+`;
+
 Button.defaultProps = {
   theme: "blue",
+};
+
+Button2.defaultProps = {
+  theme: "green",
 };
 
 const google = (window.google = window.google ? window.google : {});
@@ -131,7 +162,7 @@ function MyComponent() {
     ) * 6371;
 
   const time = distance;
-  const hours = Math.floor(time/60);
+  const hours = Math.floor(time / 80);
   const minutes = Math.round(time % 60);
 
   let service;
@@ -193,8 +224,14 @@ function MyComponent() {
   return isLoaded ? (
     <div className="map">
       <div className="details">
+        <div className="weather">
+          <img className="weather" src={weather} alt=""></img>
+          <p className="degrees">-2 Degrees</p>
+          <img className="wind" src={wind} alt=""></img>
+          <p className="tailwind">32km/h Tailwind</p>
+        </div>
         <div className="center">
-          <h2>Trip Details</h2>
+          <h2 className="tripDetails">Trip Details</h2>
         </div>
         <p>
           Starting Point: {location.state.dep.lng}, {location.state.dep.lat}
@@ -206,7 +243,9 @@ function MyComponent() {
         <p>
           Current Trip Time: {hours}h {minutes}m
         </p>
-        <p>Current Battery: {location.state.bat}%</p>
+        <p>Estimated Battery Change from Temperature: -7%</p>
+        <p>Estimated Battery Change from Tailwind: +3%</p>
+        <p>Adjusted Estimated Battery: {location.state.bat - 7 + 3}%</p>
 
         <BatteryMeter
           batteryLevel={location.state.bat / 100}
@@ -255,10 +294,11 @@ function MyComponent() {
         </GoogleMap>
       </div>
 
-      <div>
+      <div className="EvTrip">
         <div className="center">
           <h2>New Trip </h2>
         </div>
+<<<<<<< Updated upstream
         <p>
           Starting Point: {location.state.dep.lat}, {location.state.dep.lng}
         </p>
@@ -266,6 +306,9 @@ function MyComponent() {
           Destination: {location.state.des.lat}, {location.state.des.lng}
         </p>
         <p>New Trip Distance: {Math.floor(distance*100)/100} km</p>
+=======
+        <p>New Trip Distance: {distance} km</p>
+>>>>>>> Stashed changes
         <p>
           Time to Charging Station: <br></br>
           Time to Destination: <br></br>
@@ -280,9 +323,9 @@ function MyComponent() {
         />
 
         <div className="centerCol">
-          <Button onClick={generateEV} className="chargeButton">
-            View EV Charging Stations
-          </Button>
+          <Button2 onClick={generateEV} className="evChargeButton">
+            Go!
+          </Button2>
         </div>
       </div>
     </div>

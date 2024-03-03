@@ -1,6 +1,6 @@
 .map {
   width: 100vw;
-  height: 100vh;
+  height: 110vh;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -66,6 +66,11 @@
 .chargeButton {
   width: 300px;
   margin: 0px;
+}
+
+#tripStatus {
+  font-weight: 800;
+  color: red;
 }
 
 .evChargeButton {

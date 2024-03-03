@@ -40,3 +40,15 @@
   width: 100px;
   text-align: center;
 }
+
+h1, h2 {
+  font-family: 'Arvo', Georgia, Times, serif;
+  font-size: 50px;
+  line-height: 60px;
+}
+
+p {
+  font-family: 'Nobile', Helvetica, Arial, sans-serif;
+  font-size: 17px;
+  line-height: 25px;
+}

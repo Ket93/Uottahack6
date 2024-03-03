@@ -10,6 +10,7 @@ import {
   Marker,
   DirectionsRenderer,
 } from "@react-google-maps/api";
+import { all } from "q";
 
 const containerStyle = {
   width: "600px",
@@ -143,44 +144,24 @@ function MyComponent() {
   }
 
   function initMap() {
-    const xDist = location.state.des.lng - location.state.dep.lng;
-    const yDist = location.state.des.lat - location.state.dep.lat;
 
-    const point1Lng = location.state.dep.lng + xDist / 4;
-    const point1Lat = location.state.dep.lat + yDist / 4;
-
-    const point2Lng = location.state.dep.lng + (xDist / 4) * 2;
-    const point2Lat = location.state.dep.lat + (yDist / 4) * 2;
-
-    const point3Lng = location.state.dep.lng + (xDist / 4) * 3;
-    const point3Lat = location.state.dep.lat + (yDist / 4) * 3;
-
-    var point1 = new google.maps.LatLng(point1Lat, point1Lng);
-    var point2 = new google.maps.LatLng(point2Lat, point2Lng);
-    var point3 = new google.maps.LatLng(point3Lat, point3Lng);
-
-    const requests = [
-      {
-        location: point1,
-        radius: 2000,
-        type: ["electric_vehicle_charging_station"],
-      },
-      {
-        location: point2,
-        radius: 2000,
-        type: ["electric_vehicle_charging_station"],
-      },
-      {
-        location: point3,
-        radius: 2000,
-        type: ["electric_vehicle_charging_station"],
-      },
-    ];
+    console.log(directions.routes[0].overview_polyline)
+    var polyline = require('google-polyline')
+    var all_points = polyline.decode(directions.routes[0].overview_polyline)
+    console.log(all_points)
 
     service = new google.maps.places.PlacesService(map);
+    var inc = Math.floor(all_points.length/6);
+    for (let i = inc; i < all_points.length; i+=inc) {
+      console.log(i);
+      var request = 
+      {
+        location: {lat: all_points[i][0], lng: all_points[i][1]},
+        radius: 2000,
+        type: ["electric_vehicle_charging_station"],
+      }
 
-    for (let i = 0; i < requests.length; i++) {
-      service.nearbySearch(requests[i], (results, status) => {
+      service.nearbySearch(request, (results, status) => {
         console.log(results);
         if (status === google.maps.places.PlacesServiceStatus.OK && results) {
           for (let i = 0; i < results.length; i++) {
@@ -188,11 +169,12 @@ function MyComponent() {
             createMarker(results[i]);
           }
 
-          map.setCenter(results[0].geometry.location);
+          //map.setCenter(results[0].geometry.location);
         }
       });
     }
   }
+    
 
   function createMarker(place) {
     if (!place.geometry || !place.geometry.location) return;
